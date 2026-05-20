@@ -2,7 +2,6 @@ import RoomCard from "@/components/RoomCard";
 import RoomFilter from "@/components/RoomFilter";
 
 export default async function Page({ searchParams }) {
-  // ✅ IMPORTANT FIX (unwrap Promise safely)
   const params = await searchParams;
 
   const search = params?.search || "";

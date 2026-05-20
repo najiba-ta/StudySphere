@@ -7,14 +7,14 @@ import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0b0f1a] text-white border-t border-white/10 mt-20">
+    <footer className="bg-[#0b0f1a] text-white border-t border-white/10">
 
       <div className="max-w-7xl mx-auto px-6 py-14 grid gap-10 md:grid-cols-3">
 
         {/* BRAND */}
         <div>
           <h2 className="text-2xl font-bold text-[#F6E7D0]">
-            StudyNook
+            StudySphere
           </h2>
 
           <p className="mt-4 text-sm text-gray-400 leading-6">
@@ -23,7 +23,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* LINKS */}
         <div>
           <h3 className="text-lg font-semibold text-[#F6E7D0] mb-4">
             Quick Links
@@ -37,7 +36,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* CONTACT + SOCIAL */}
         <div>
           <h3 className="text-lg font-semibold text-[#F6E7D0] mb-4">
             Contact
@@ -47,7 +45,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-2">
               <Mail size={16} />
-              support@studynook.com
+              support@studysphere.com
             </div>
 
             <div className="flex items-center gap-2">
@@ -61,7 +59,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* SOCIAL ICONS */}
           <div className="flex gap-4 mt-5 text-xl text-gray-400">
             <FaFacebook className="hover:text-[#E4C08A] cursor-pointer transition" />
             <FaInstagram className="hover:text-[#E4C08A] cursor-pointer transition" />
@@ -71,9 +68,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* BOTTOM BAR */}
       <div className="border-t border-white/10 py-6 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()} StudyNook. All rights reserved.
+        © {new Date().getFullYear()} StudySphere. All rights reserved.
       </div>
     </footer>
   );

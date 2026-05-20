@@ -26,7 +26,6 @@ export default function Banner() {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-14 grid lg:grid-cols-2 gap-40 items-center">
 
-        {/* LEFT COLLAGE */}
         <div className="rotate-[8deg] grid grid-cols-3 gap-4 md:gap-5">
 
           {images.map((img, i) => (
@@ -48,7 +47,6 @@ export default function Banner() {
 
         </div>
 
-        {/* RIGHT CONTENT */}
         <div className="text-center lg:text-left animate__animated animate__fadeInRight">
 
           <div className="inline-block px-3 py-2 rounded-full border border-[#ddc39b] text-xs md:text-sm tracking-[3px] bg-[#f8ebd8] shadow-sm animate__animated animate__fadeInDown">

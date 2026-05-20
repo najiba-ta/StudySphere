@@ -30,7 +30,6 @@ export default function FeatureSection() {
     <section className="bg-[#F6E7D0] py-20 px-6">
       <div className="max-w-7xl mx-auto text-center">
 
-        {/* Heading */}
         <h2 className="text-3xl md:text-4xl font-bold text-[#0b0f1a]">
           Why Choose <span className="text-[#5f2f28]">StudyNook</span>
         </h2>
@@ -40,7 +39,6 @@ export default function FeatureSection() {
           libraries, and focused learning environments.
         </p>
 
-        {/* Cards */}
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
           {features.map((f, i) => (

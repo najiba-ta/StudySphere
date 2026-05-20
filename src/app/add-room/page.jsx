@@ -17,7 +17,7 @@ const amenitiesList = [
 const AddRoomPage = () => {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
 
-  // ✅ FIXED
+ 
   const { data: session } = authClient.useSession();
 
   const toggleAmenity = (item) => {
@@ -38,7 +38,7 @@ const AddRoomPage = () => {
 
     roomsData.amenities = selectedAmenities;
 
-    // ✅ FIXED
+   
     roomsData.ownerId = session?.user?.id;
 
     const res = await fetch("http://localhost:8000/rooms", {

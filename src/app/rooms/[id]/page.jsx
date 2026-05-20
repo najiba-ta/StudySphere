@@ -37,7 +37,7 @@ const RoomDetailsPage = () => {
       <div className="flex min-h-screen items-center justify-center bg-[#F6E7D0]">
         <div className="flex flex-col items-center gap-3">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#BC5F41] border-t-transparent"></div>
-          <p className="text-lg font-medium text-[#3C0906] animate-pulse">Loading Premium Space...</p>
+          <p className="text-lg font-medium text-[#3C0906] animate-pulse">Loading...</p>
         </div>
       </div>
     );
@@ -47,7 +47,6 @@ const RoomDetailsPage = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F6E7D0]">
         <div className="text-center bg-white p-8 rounded-3xl shadow-xl max-w-sm">
-          <span className="text-5xl">🛑</span>
           <h3 className="text-xl font-bold text-[#3C0906] mt-4">Room Not Found</h3>
           <p className="text-gray-500 text-sm mt-1">The space you are looking for might have been removed.</p>
           <Link href="/rooms" className="mt-5 inline-block bg-[#BC5F41] text-white px-5 py-2 rounded-xl text-sm font-semibold">
@@ -64,7 +63,6 @@ const RoomDetailsPage = () => {
     <div className="min-h-screen bg-[#F6E7D0] px-4 py-12 md:px-8">
       <div className="mx-auto max-w-6xl">
         
-        {/* 📸 Premium Image Section with Badges */}
         <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl border border-white/20 bg-white/40 backdrop-blur-sm p-3">
           <div className="relative overflow-hidden rounded-[2rem] h-[300px] md:h-[450px] w-full">
             {room?.image ? (
@@ -81,7 +79,6 @@ const RoomDetailsPage = () => {
               </div>
             )}
             
-            {/* Hourly Rate Overlay Badge */}
             <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-[#3C0906] font-bold px-5 py-2.5 rounded-2xl shadow-lg border border-amber-100 flex items-center gap-1">
               <span className="text-xl font-black text-[#BC5F41]">৳{room.hourlyRate}</span>
               <span className="text-xs text-gray-500 font-normal">/ hr</span>
@@ -89,10 +86,8 @@ const RoomDetailsPage = () => {
           </div>
         </div>
 
-        {/* 📋 Details Grid Content */}
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
-          {/* Left Side: Name, Description, Amenities */}
           <div className="lg:col-span-2 bg-white/75 backdrop-blur-md p-6 md:p-8 rounded-[2rem] shadow-xl border border-white/60 flex flex-col gap-6">
             <div>
               <span className="text-xs font-bold tracking-widest text-[#BC5F41] uppercase bg-[#BC5F41]/10 px-3 py-1 rounded-full">
@@ -130,7 +125,6 @@ const RoomDetailsPage = () => {
             </div>
           </div>
           
-          {/* Right Side: Quick Info Card & Action Sidebar */}
           <div className="flex flex-col gap-4">
             <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-white flex flex-col gap-5 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#BC5F41]/5 rounded-bl-[5rem] -z-10"></div>
@@ -139,7 +133,6 @@ const RoomDetailsPage = () => {
                 Space Overview
               </h3>
 
-              {/* Specs Stack */}
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-amber-50/40 rounded-xl border border-amber-50">
                   <span className="text-gray-500 font-medium text-sm flex items-center gap-2">👥 Capacity</span>
@@ -151,7 +144,6 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
 
-              {/* Primary Booking Button */}
               <div className="mt-2">
                 {session?.user ? (
                   <BookRoomModal room={room} />

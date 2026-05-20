@@ -63,14 +63,12 @@ export default function UpdateRoomForm({ room }) {
   };
 
   return (
-    // 🎯 মূল কন্টেইনারে লাক্সারি প্যাডিং (p-6 md:p-10) এবং শ্যাডো দিয়ে কার্ড লুক দেওয়া হয়েছে
     <div className="bg-white/90 backdrop-blur-md p-6 md:p-10 rounded-[2.5rem] border border-white shadow-xl flex flex-col gap-8 w-full">
       <form onSubmit={handleUpdate} className="space-y-6">
         
         {/* 🔹 Input Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          {/* Room Name */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
               Room Name
@@ -84,7 +82,6 @@ export default function UpdateRoomForm({ room }) {
             />
           </div>
 
-          {/* Floor Level */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
               Floor Location
@@ -98,7 +95,6 @@ export default function UpdateRoomForm({ room }) {
             />
           </div>
 
-          {/* Capacity */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
               Capacity (People)
@@ -113,7 +109,6 @@ export default function UpdateRoomForm({ room }) {
             />
           </div>
 
-          {/* Hourly Rate */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
               Hourly Rate (৳)
@@ -129,7 +124,6 @@ export default function UpdateRoomForm({ room }) {
           </div>
         </div>
 
-        {/* Image URL (Full Width) */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
             Room Image URL
@@ -143,7 +137,6 @@ export default function UpdateRoomForm({ room }) {
           />
         </div>
 
-        {/* Description (Full Width) */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
             Detailed Description
@@ -157,7 +150,6 @@ export default function UpdateRoomForm({ room }) {
           />
         </div>
 
-        {/* 🔹 Amenities Section with enhanced padding */}
         <div className="flex flex-col gap-3 pt-2">
           <label className="text-xs font-bold text-[#3C0906]/70 uppercase tracking-widest pl-1">
             Modify Amenities
@@ -184,7 +176,6 @@ export default function UpdateRoomForm({ room }) {
           </div>
         </div>
 
-        {/* 🔹 Form Submit Action Button */}
         <div className="pt-6 border-t border-amber-100/70 mt-4">
           <button
             type="submit"

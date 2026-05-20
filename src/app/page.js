@@ -7,13 +7,10 @@ import LatestRoomsSection from "@/components/LatestRooms";
 export default function Home() {
   return (
     <div>
-      <Banner />
-      
-      {/* শুধু সেকশন কম্পোনেন্টটা এখানে কল হবে */}
-      <LatestRoomsSection />
-      
-      <FeatureSection />
-      <CTASection />
+      <Banner/>
+      <LatestRoomsSection/>  
+      <FeatureSection/>
+      <CTASection/>
     </div>
   );
 }

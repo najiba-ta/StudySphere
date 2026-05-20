@@ -23,6 +23,7 @@ const RoomCard = ({ room }) => {
 
   const handleNavigation = () => {
     setIsNavigating(true);
+
     setTimeout(() => {
       router.push(`/rooms/${_id}`);
     }, 1500); 
@@ -42,10 +43,9 @@ const RoomCard = ({ room }) => {
         </div>
       )}
 
-      {/* 🎯 পরিবর্তন ১: মেইন কার্ডে flex flex-col এবং h-full নিশ্চিত করা হয়েছে */}
-      <div className="bg-[#FFF8F0] border border-[#d9a96d] rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group flex flex-col h-full w-full">
+      <div className="bg-[#FFF8F0] border border-[#d9a96d] rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group">
         
-        <div className="overflow-hidden relative shrink-0">
+        <div className="overflow-hidden relative">
           <Image
             src={image}
             width={600}
@@ -59,11 +59,10 @@ const RoomCard = ({ room }) => {
           </div>
         </div>
 
-        {/* 🎯 পরিবর্তন ২: কন্টেন্ট হোল্ডারে flex flex-col এবং flex-grow দেওয়া হয়েছে */}
-        <div className="p-5 flex flex-col flex-grow space-y-4">
+        <div className="p-5 space-y-4">
 
           <div>
-            <h2 className="text-xl font-bold text-[#3C0906] line-clamp-1">
+            <h2 className="text-xl font-bold text-[#3C0906]">
               {roomName}
             </h2>
 
@@ -72,27 +71,38 @@ const RoomCard = ({ room }) => {
             </p>
           </div>
 
-          {/* line-clamp-2 নিশ্চিত করে যে ডেসক্রিপশন সর্বোচ্চ ২ লাইনের বেশি জায়গা নিবে না */}
-          <p className="text-sm leading-5 text-[#5a4038] line-clamp-2">
-            {description}
+          <p className="text-sm leading-5 text-[#5a4038]">
+            {description?.length > 90
+              ? description.slice(0, 90) + "..."
+              : description}
           </p>
 
           <div className="flex items-center justify-between bg-[#E4C08A]/20 border border-[#E4C08A] rounded-2xl px-4 py-3">
+            
             <div>
-              <p className="text-xs text-[#84352D]">Seat Capacity</p>
-              <p className="font-semibold text-[#3C0906] text-sm">{capacity} People</p>
+              <p className="text-xs text-[#84352D]">
+                Seat Capacity
+              </p>
+
+              <p className="font-semibold text-[#3C0906] text-sm">
+                {capacity} People
+              </p>
             </div>
 
             <div className="w-px h-8 bg-[#BC5F41]/30"></div>
 
             <div>
-              <p className="text-xs text-[#84352D]">Floor</p>
-              <p className="font-semibold text-[#3C0906] text-sm">{floor}</p>
+              <p className="text-xs text-[#84352D]">
+                Floor
+              </p>
+
+              <p className="font-semibold text-[#3C0906] text-sm">
+                {floor}
+              </p>
             </div>
           </div>
 
-          {/* 🎯 পরিবর্তন ৩: mb-auto যোগ করা হয়েছে যাতে চিপস সংখ্যা কম বা বেশি হলেও নিচের বাটনকে ধাক্কা দিয়ে একদম নিচে লক করে রাখে */}
-          <div className="flex flex-wrap gap-2 mb-auto pb-2">
+          <div className="flex flex-wrap gap-2">
             {amenities?.slice(0, 3).map((item, index) => (
               <span
                 key={index}
@@ -109,8 +119,7 @@ const RoomCard = ({ room }) => {
             )}
           </div>
 
-          {/* বাটনটি এখন সবসময় কার্ডের একেবারে নিচে ফিক্সড থাকবে */}
-          <div className="pt-2">
+          <div className="pt-1">
             <Button 
               onClick={handleNavigation}
               className="w-full rounded-2xl h-11 bg-[#BC5F41] hover:bg-[#84352D] text-white font-medium text-sm transition-all duration-300 shadow-md"

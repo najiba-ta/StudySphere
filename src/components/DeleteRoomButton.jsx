@@ -35,7 +35,6 @@ const DeleteRoomButton = ({ roomId, ownerId }) => {
     setOpen(false);
   };
 
-  // ownership check inside component
   if (ownerId !== session?.user?.id) return null;
 
   return (

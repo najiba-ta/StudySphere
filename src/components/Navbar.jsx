@@ -5,12 +5,11 @@ import Image from "next/image";
 import logo from "../../public/assests/logo.png";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, LogOut, Sun, Moon } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
 import { Avatar, Button } from "@heroui/react";
 import toast from "react-hot-toast";
-import { useTheme } from "@/context/ThemeContext";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -19,8 +18,6 @@ export default function Navbar() {
 
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Loading...");
-
-  const { theme, toggleTheme } = useTheme();
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -33,7 +30,7 @@ export default function Navbar() {
   const privateLinks = [
     { name: "Add Room", href: "/add-room" },
     { name: "My Listings", href: "/my-listing" },
-    { name: "My Bookings", href: "/my-bookings" },
+    { name: "My Bookings", href: "/my-booking" },
   ];
 
   const handleNavigation = (href, name) => {
@@ -67,7 +64,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* গ্লাসি স্পিনার */}
       {loading && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#E4E4E6]/40 backdrop-blur-md">
           <div className="relative flex items-center justify-center">
@@ -97,7 +93,6 @@ export default function Navbar() {
             />
           </button>
 
-          {/* DESKTOP LINKS */}
           <div className="hidden md:flex items-center gap-6 text-sm">
             {publicLinks.map((link) => (
               <button
@@ -129,17 +124,7 @@ export default function Navbar() {
               ))}
           </div>
 
-          {/* DESKTOP AUTH & THEME TOGGLE */}
           <div className="hidden md:flex items-center gap-4">
-            
-            {/* ডার্ক/লাইট মোড সুইচ বাটন */}
-            <Button
-              onClick={toggleTheme}
-              className="h-9 px-3 min-w-0 rounded-xl bg-[#84352D]/30 text-[#E4C08A] hover:bg-[#BC5F41] transition"
-            >
-              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-            </Button>
-
             {user ? (
               <>
                 <div className="flex items-center gap-3">
@@ -186,7 +171,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* MOBILE HAMBURGER BUTTON */}
           <button
             onClick={() => setOpen(!open)}
             className="md:hidden text-[#E4E4E6]"
@@ -195,26 +179,8 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* MOBILE MENU */}
         {open && (
           <div className="md:hidden px-5 py-4 space-y-4 bg-[#3C0906] border-t border-[#E4C08A]/10 flex flex-col items-start">
-            
-            {/* মোবাইল মোড থিম টগল বাটন */}
-            <Button
-              onClick={toggleTheme}
-              className="h-9 px-4 rounded-xl bg-[#84352D]/30 text-[#E4C08A] flex items-center gap-2 transition w-full justify-center"
-            >
-              {theme === "light" ? (
-                <>
-                  <Moon size={16} /> <span>Dark Mode</span>
-                </>
-              ) : (
-                <>
-                  <Sun size={16} /> <span>Light Mode</span>
-                </>
-              )}
-            </Button>
-
             {publicLinks.map((link) => (
               <button
                 key={link.href}

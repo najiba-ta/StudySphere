@@ -8,13 +8,11 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden bg-gradient-to-br from-[#3C0906] via-[#2a0a08] to-[#BC5F41]">
 
-      {/* background blobs */}
       <div className="absolute w-[300px] h-[300px] bg-[#BC5F41]/20 rounded-full blur-3xl top-[-80px] left-[-80px] animate-pulse" />
       <div className="absolute w-[250px] h-[250px] bg-[#E4C08A]/10 rounded-full blur-3xl bottom-[-80px] right-[-80px] animate-pulse" />
 
       <div className="max-w-4xl w-full grid md:grid-cols-2 gap-10 items-center z-10">
 
-        {/* IMAGE */}
         <div className="flex justify-center animate__animated animate__fadeInLeft">
           <div className="relative">
             <Image
@@ -31,7 +29,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        {/* TEXT */}
+
         <div className="text-center md:text-left animate__animated animate__fadeInRight">
 
           <p className="text-[#E4C08A]/70 text-xs tracking-[4px]">
