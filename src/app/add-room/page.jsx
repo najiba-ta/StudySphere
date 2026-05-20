@@ -1,216 +1,219 @@
 "use client";
 
 import { useState } from "react";
+import { Sparkles, MapPin, ImageIcon, Users, DollarSign } from "lucide-react";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
-export default function AddRoomPage() {
-  const [amenities, setAmenities] = useState([]);
+const amenitiesList = [
+  "Wi-Fi",
+  "Whiteboard",
+  "Projector",
+  "Power Outlets",
+  "Quiet Zone",
+  "Air Conditioning",
+];
 
-  const amenityOptions = [
-    "Whiteboard",
-    "Projector",
-    "Wi-Fi",
-    "Power Outlets",
-    "Quiet Zone",
-    "Air Conditioning",
-  ];
+const AddRoomPage = () => {
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
-  const handleAmenityChange = (value) => {
-    if (amenities.includes(value)) {
-      setAmenities(amenities.filter((item) => item !== value));
+  // ✅ FIXED
+  const { data: session } = authClient.useSession();
+
+  const toggleAmenity = (item) => {
+    if (selectedAmenities.includes(item)) {
+      setSelectedAmenities(
+        selectedAmenities.filter((amenity) => amenity !== item),
+      );
     } else {
-      setAmenities([...amenities, value]);
+      setSelectedAmenities([...selectedAmenities, item]);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddRoom = async (e) => {
     e.preventDefault();
 
-    const form = e.target;
+    const formData = new FormData(e.currentTarget);
+    const roomsData = Object.fromEntries(formData.entries());
 
-    const roomData = {
-      roomName: form.roomName.value,
-      description: form.description.value,
-      image: form.image.value,
-      floor: form.floor.value,
-      capacity: parseInt(form.capacity.value),
-      hourlyRate: parseInt(form.hourlyRate.value),
-      amenities,
-    };
+    roomsData.amenities = selectedAmenities;
 
-    console.log(roomData);
+    // ✅ FIXED
+    roomsData.ownerId = session?.user?.id;
 
-    toast.success("Room added successfully");
+    const res = await fetch("http://localhost:8000/rooms", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(roomsData),
+    });
 
-    form.reset();
-    setAmenities([]);
+    const data = await res.json();
+
+    if (data?.insertedId) {
+      toast.success("Room added successfully!");
+      e.target.reset();
+      setSelectedAmenities([]);
+    }
   };
 
+  const inputClass =
+    "w-full rounded-[18px] bg-white/70 border border-[#BC5F41]/20 px-4 py-3 text-[#3C0906] outline-none transition focus:border-[#BC5F41] focus:ring-4 focus:ring-[#BC5F41]/10";
+
   return (
-    <div className="min-h-screen bg-[#F6E7D0] py-14 px-5">
+    <div className="min-h-screen bg-[#F6E7D0] px-4 py-14">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-10 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#BC5F41]/20 bg-[#BC5F41]/10 px-5 py-2 text-sm font-medium text-[#84352D]">
+            <Sparkles size={16} />
+            StudySphere Room Listing
+          </div>
 
-      <div className="max-w-4xl mx-auto">
-
-        {/* heading */}
-        <div className="text-center mb-10">
-          <p className="text-[#84352D] tracking-[4px] text-xs uppercase">
-            StudySphere
-          </p>
-
-          <h1 className="text-3xl md:text-5xl font-bold text-[#3C0906] mt-3">
-            Add A New Study Room
+          <h1 className="mt-4 text-4xl font-bold text-[#3C0906]">
+            Add New Study Room
           </h1>
 
-          <p className="text-[#5c4033] mt-4 max-w-2xl mx-auto leading-7">
-            Create your room listing with detailed information so students
-            can easily discover and book the perfect study environment.
+          <p className="mt-3 text-[#84352D]/70">
+            Create a focused learning space for students
           </p>
         </div>
 
-        {/* form */}
-        <div className="bg-white/60 backdrop-blur-md border border-[#E4C08A]/30 rounded-[30px] shadow-xl p-6 md:p-10">
-
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-7"
-          >
-
-            {/* room name */}
-            <div>
-              <label className="block text-sm font-medium text-[#3C0906] mb-2">
-                Room Name
-              </label>
-
-              <input
-                type="text"
-                name="roomName"
-                required
-                placeholder="Silent Study Room"
-                className="w-full rounded-2xl border border-[#d9b98a] bg-white px-5 py-3 outline-none focus:border-[#BC5F41]"
-              />
-            </div>
-
-            {/* description */}
-            <div>
-              <label className="block text-sm font-medium text-[#3C0906] mb-2">
-                Description
-              </label>
-
-              <textarea
-                name="description"
-                rows="5"
-                required
-                placeholder="Describe the environment, facilities and atmosphere..."
-                className="w-full rounded-2xl border border-[#d9b98a] bg-white px-5 py-3 outline-none focus:border-[#BC5F41]"
-              />
-            </div>
-
-            {/* image + floor */}
-            <div className="grid md:grid-cols-2 gap-6">
-
+        <div className="rounded-[30px] border border-[#BC5F41]/10 bg-white/80 p-6 shadow-xl backdrop-blur-xl md:p-10">
+          <form onSubmit={handleAddRoom} className="space-y-7">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[#3C0906] mb-2">
-                  Image URL
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
+                  <Sparkles size={16} className="text-[#BC5F41]" />
+                  Room Name
                 </label>
-
                 <input
-                  type="text"
-                  name="image"
+                  name="roomName"
+                  placeholder="Silent Focus Room"
+                  className={inputClass}
                   required
-                  placeholder="https://example.com/image.jpg"
-                  className="w-full rounded-2xl border border-[#d9b98a] bg-white px-5 py-3 outline-none focus:border-[#BC5F41]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3C0906] mb-2">
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
+                  <MapPin size={16} className="text-[#BC5F41]" />
                   Floor
                 </label>
-
                 <input
-                  type="text"
                   name="floor"
-                  required
                   placeholder="3rd Floor"
-                  className="w-full rounded-2xl border border-[#d9b98a] bg-white px-5 py-3 outline-none focus:border-[#BC5F41]"
+                  className={inputClass}
+                  required
                 />
               </div>
-
             </div>
 
-            {/* capacity + rate */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[#3C0906]">
+                Description
+              </label>
+              <textarea
+                name="description"
+                rows={5}
+                placeholder="Describe the room environment..."
+                className={inputClass + " resize-none"}
+                required
+              />
+            </div>
 
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
+                <ImageIcon size={16} className="text-[#BC5F41]" />
+                Room Image URL
+              </label>
+              <input
+                name="image"
+                placeholder="https://example.com/room.jpg"
+                className={inputClass}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[#3C0906] mb-2">
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
+                  <Users size={16} className="text-[#BC5F41]" />
                   Seat Capacity
                 </label>
-
                 <input
-                  type="number"
                   name="capacity"
-                  required
+                  type="number"
+                  min={1}
                   placeholder="4"
-                  className="w-full rounded-2xl border border-[#d9b98a] bg-white px-5 py-3 outline-none focus:border-[#BC5F41]"
+                  className={inputClass}
+                  required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3C0906] mb-2">
-                  Hourly Rate ($)
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
+                  <DollarSign size={16} className="text-[#BC5F41]" />
+                  Hourly Rate
                 </label>
-
                 <input
-                  type="number"
                   name="hourlyRate"
+                  type="number"
+                  min={1}
+                  placeholder="10"
+                  className={inputClass}
                   required
-                  placeholder="5"
-                  className="w-full rounded-2xl border border-[#d9b98a] bg-white px-5 py-3 outline-none focus:border-[#BC5F41]"
                 />
               </div>
-
             </div>
 
-            {/* amenities */}
             <div>
-              <label className="block text-sm font-medium text-[#3C0906] mb-4">
+              <label className="mb-4 block text-sm font-medium text-[#3C0906]">
                 Amenities
               </label>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {amenitiesList.map((item) => {
+                  const active = selectedAmenities.includes(item);
 
-                {amenityOptions.map((item) => (
-                  <label
-                    key={item}
-                    className="flex items-center gap-3 rounded-2xl border border-[#E4C08A]/30 bg-white px-4 py-3 cursor-pointer hover:border-[#BC5F41] transition"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={amenities.includes(item)}
-                      onChange={() => handleAmenityChange(item)}
-                      className="accent-[#BC5F41]"
-                    />
+                  return (
+                    <button
+                      type="button"
+                      key={item}
+                      onClick={() => toggleAmenity(item)}
+                      className={`rounded-2xl border px-5 py-4 text-sm font-medium transition ${
+                        active
+                          ? "border-[#BC5F41] bg-[#BC5F41]/10 text-[#84352D]"
+                          : "border-[#BC5F41]/10 bg-[#F6E7D0]/50 text-[#3C0906] hover:border-[#BC5F41]/30"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{item}</span>
 
-                    <span className="text-sm text-[#3C0906]">
-                      {item}
-                    </span>
-                  </label>
-                ))}
-
+                        <input
+                          type="checkbox"
+                          checked={active}
+                          readOnly
+                          className="h-4 w-4 accent-[#BC5F41]"
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* button */}
             <button
               type="submit"
-              className="w-full rounded-2xl bg-[#3C0906] py-4 text-white font-semibold tracking-wide transition hover:bg-[#84352D]"
+              className="w-full rounded-2xl bg-[#3C0906] py-4 text-lg font-semibold text-white transition hover:bg-[#84352D]"
             >
-              Add Room
+              + Add Study Room
             </button>
-
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AddRoomPage;

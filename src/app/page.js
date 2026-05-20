@@ -1,19 +1,19 @@
+
 import Banner from "@/components/Banner";
+import CTASection from "@/components/CTASection";
 import FeatureSection from "@/components/FeatureSection";
+import LatestRoomsSection from "@/components/LatestRooms";
 
-export default async function Home() {
-  // const res = await fetch("http://localhost:8000/rooms", {
-  //   cache: "no-store",
-  // });
-
-  // const rooms = await res.json();
-
+export default function Home() {
   return (
     <div>
-      <Banner/>
-      <FeatureSection/>
-      {/* <RoomCardHomePage/>
-      <CTASection/> */}
+      <Banner />
+      
+      {/* শুধু সেকশন কম্পোনেন্টটা এখানে কল হবে */}
+      <LatestRoomsSection />
+      
+      <FeatureSection />
+      <CTASection />
     </div>
   );
 }

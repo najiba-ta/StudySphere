@@ -1,158 +1,270 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import logo from "../../public/assests/logo.png"
-import { usePathname } from "next/navigation";
-import { Menu, X, LogOut } from "lucide-react";
+import logo from "../../public/assests/logo.png";
+
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, X, LogOut, Sun, Moon } from "lucide-react";
+
 import { authClient } from "@/lib/auth-client";
-import { Button, Avatar } from "@heroui/react";
+import { Avatar, Button } from "@heroui/react";
 import toast from "react-hot-toast";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Loading...");
+
+  const { theme, toggleTheme } = useTheme();
+
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  const [open, setOpen] = useState(false);
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    toast.success("Logged out successfully");
-  };
-
-  const isOwner = user?.role === "owner";
-
-  const navLinks = [
+  const publicLinks = [
     { name: "Home", href: "/" },
     { name: "Rooms", href: "/rooms" },
+  ];
 
-    ...(isOwner ? [{ name: "Add Room", href: "/add-room" }] : []),
-
+  const privateLinks = [
+    { name: "Add Room", href: "/add-room" },
     { name: "My Listings", href: "/my-listing" },
     { name: "My Bookings", href: "/my-bookings" },
   ];
 
+  const handleNavigation = (href, name) => {
+    setOpen(false);
+    setLoadingText(`Loading ${name}...`);
+    setLoading(true);
+
+    setTimeout(() => {
+      router.push(href);
+      setLoading(false);
+    }, 1500);
+  };
+
+  const handleLogout = async () => {
+    setOpen(false);
+    setLoadingText("Logging out...");
+    setLoading(true);
+
+    try {
+      await authClient.signOut();
+      toast.success("Logged out successfully");
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+    } catch {
+      toast.error("Logout failed!");
+      setLoading(false);
+    }
+  };
+
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#E4C08A]/10 bg-[#3C0906]/85 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src={logo}
-            alt="logo"
-            width={140}
-            height={40}
-            className="drop-shadow-[0_0_12px_rgba(228,196,138,0.15)]"
-          />
-        </Link>
-
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-7 text-sm">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`transition duration-200 hover:text-[#E4C08A] ${
-                pathname === link.href
-                  ? "text-[#E4C08A] font-semibold"
-                  : "text-[#E4E4E6]"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-
-        {/* Right Side */}
-        <div className="hidden md:flex items-center gap-4">
-
-          {user ? (
-            <>
-              {/* Avatar */}
-              <Avatar className="h-9 w-9 border border-[#E4C08A]/20">
-                <Avatar.Image src={user.image} />
-                <Avatar.Fallback className="bg-[#84352D] text-[#E4E4E6]">
-                  {user.name?.charAt(0)}
-                </Avatar.Fallback>
-              </Avatar>
-
-              {/* Logout */}
-              <Button
-                onClick={handleLogout}
-                className="rounded-xl border border-[#BC5F41]/30 bg-[#84352D]/20 text-[#E4E4E6] hover:bg-[#BC5F41]/30 hover:text-white"
-              >
-                <LogOut size={16} />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="text-[#E4E4E6] hover:text-[#E4C08A] transition"
-              >
-                Login
-              </Link>
-
-              <Link
-                href="/register"
-                className="rounded-xl border border-[#E4C08A]/20 bg-[#BC5F41]/20 px-4 py-2 text-[#E4C08A] hover:bg-[#BC5F41]/30 transition"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* Mobile Button */}
-        <button
-          className="md:hidden text-[#E4E4E6]"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden border-t border-[#E4C08A]/10 bg-[#3C0906] px-5 py-4 space-y-3 text-[#E4E4E6]">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`block transition hover:text-[#E4C08A] ${
-                pathname === link.href ? "text-[#E4C08A]" : ""
-              }`}
-              onClick={() => setOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
-
-          <div className="pt-3 border-t border-[#E4C08A]/10">
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 text-[#E4E4E6] hover:text-[#BC5F41]"
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
-            ) : (
-              <div className="flex gap-4">
-                <Link href="/login" className="hover:text-[#E4C08A]">
-                  Login
-                </Link>
-                <Link href="/register" className="hover:text-[#E4C08A]">
-                  Register
-                </Link>
-              </div>
-            )}
+    <>
+      {/* গ্লাসি স্পিনার */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#E4E4E6]/40 backdrop-blur-md">
+          <div className="relative flex items-center justify-center">
+            <div className="h-16 w-16 animate-spin rounded-full border-4 border-[#E4C08A]/20 border-t-[#BC5F41] border-b-[#84352D]"></div>
+            <div className="absolute h-10 w-10 animate-spin rounded-full border-4 border-[#E4E4E6]/10 border-r-[#3C0906] border-l-[#84352D]"></div>
           </div>
+          <p className="mt-4 text-sm font-semibold tracking-wider text-[#3C0906] animate-pulse">
+            {loadingText}
+          </p>
         </div>
       )}
-    </nav>
+
+      <nav className="sticky top-0 z-40 bg-[#3C0906]/90 backdrop-blur-xl border-b border-[#E4C08A]/10">
+
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-5 py-4">
+
+          <button 
+            onClick={() => handleNavigation("/", "Home")} 
+            className="flex items-center bg-transparent border-none p-0 cursor-pointer"
+          >
+            <Image
+              src={logo}
+              alt="logo"
+              width={130}
+              height={40}
+              className="drop-shadow-md"
+            />
+          </button>
+
+          {/* DESKTOP LINKS */}
+          <div className="hidden md:flex items-center gap-6 text-sm">
+            {publicLinks.map((link) => (
+              <button
+                key={link.href}
+                onClick={() => handleNavigation(link.href, link.name)}
+                className={`transition bg-transparent border-none p-0 cursor-pointer ${
+                  pathname === link.href
+                    ? "text-[#E4C08A] font-semibold"
+                    : "text-[#E4E4E6] hover:text-[#E4C08A]"
+                }`}
+              >
+                {link.name}
+              </button>
+            ))}
+
+            {user &&
+              privateLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => handleNavigation(link.href, link.name)}
+                  className={`transition bg-transparent border-none p-0 cursor-pointer ${
+                    pathname === link.href
+                    ? "text-[#E4C08A] font-semibold"
+                    : "text-[#E4E4E6] hover:text-[#E4C08A]"
+                  }`}
+                >
+                  {link.name}
+                </button>
+              ))}
+          </div>
+
+          {/* DESKTOP AUTH & THEME TOGGLE */}
+          <div className="hidden md:flex items-center gap-4">
+            
+            {/* ডার্ক/লাইট মোড সুইচ বাটন */}
+            <Button
+              onClick={toggleTheme}
+              className="h-9 px-3 min-w-0 rounded-xl bg-[#84352D]/30 text-[#E4C08A] hover:bg-[#BC5F41] transition"
+            >
+              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+            </Button>
+
+            {user ? (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="text-right hidden lg:block">
+                    <p className="text-sm text-[#E4E4E6] font-medium">
+                      {user?.name}
+                    </p>
+                    <p className="text-xs text-[#E4C08A]/70">
+                      Welcome
+                    </p>
+                  </div>
+
+                  <Avatar className="h-10 w-10 border border-[#E4C08A]/20">
+                    <Avatar.Image src={user?.image} />
+                    <Avatar.Fallback className="bg-[#84352D] text-white">
+                      {user?.name?.charAt(0)}
+                    </Avatar.Fallback>
+                  </Avatar>
+                </div>
+                
+                <Button
+                  onClick={handleLogout}
+                  className="h-9 px-3 rounded-xl bg-[#84352D]/30 text-white hover:bg-[#BC5F41] transition"
+                >
+                  <LogOut size={16} />
+                </Button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => handleNavigation("/login", "Login")}
+                  className="text-[#E4E4E6] hover:text-[#E4C08A] transition bg-transparent border-none p-0 cursor-pointer"
+                >
+                  Login
+                </button>
+
+                <button
+                  onClick={() => handleNavigation("/register", "Registration")}
+                  className="px-4 py-2 rounded-xl bg-[#BC5F41]/30 text-[#E4C08A] hover:bg-[#BC5F41]/50 transition border-none cursor-pointer"
+                >
+                  Register
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* MOBILE HAMBURGER BUTTON */}
+          <button
+            onClick={() => setOpen(!open)}
+            className="md:hidden text-[#E4E4E6]"
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
+
+        {/* MOBILE MENU */}
+        {open && (
+          <div className="md:hidden px-5 py-4 space-y-4 bg-[#3C0906] border-t border-[#E4C08A]/10 flex flex-col items-start">
+            
+            {/* মোবাইল মোড থিম টগল বাটন */}
+            <Button
+              onClick={toggleTheme}
+              className="h-9 px-4 rounded-xl bg-[#84352D]/30 text-[#E4C08A] flex items-center gap-2 transition w-full justify-center"
+            >
+              {theme === "light" ? (
+                <>
+                  <Moon size={16} /> <span>Dark Mode</span>
+                </>
+              ) : (
+                <>
+                  <Sun size={16} /> <span>Light Mode</span>
+                </>
+              )}
+            </Button>
+
+            {publicLinks.map((link) => (
+              <button
+                key={link.href}
+                onClick={() => handleNavigation(link.href, link.name)}
+                className="block text-[#E4E4E6] hover:text-[#E4C08A] bg-transparent border-none p-0 text-left w-full cursor-pointer"
+              >
+                {link.name}
+              </button>
+            ))}
+
+            {user &&
+              privateLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => handleNavigation(link.href, link.name)}
+                  className="block text-[#E4E4E6] hover:text-[#E4C08A] bg-transparent border-none p-0 text-left w-full cursor-pointer"
+                >
+                  {link.name}
+                </button>
+              ))}
+
+            <div className="pt-3 border-t border-[#E4C08A]/10 w-full">
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-white hover:text-[#BC5F41] bg-transparent border-none p-0 w-full text-left cursor-pointer"
+                >
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              ) : (
+                <div className="flex gap-4 text-sm">
+                  <button 
+                    onClick={() => handleNavigation("/login", "Login")} 
+                    className="text-white bg-transparent border-none p-0 cursor-pointer"
+                  >
+                    Login
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation("/register", "Registration")} 
+                    className="text-[#E4C08A] bg-transparent border-none p-0 cursor-pointer"
+                  >
+                    Register
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
+    </>
   );
 }
