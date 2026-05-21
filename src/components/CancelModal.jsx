@@ -2,7 +2,7 @@
 
 import { Button } from "@heroui/react";
 
-const CancelModal = ({ open, onClose, onConfirm }) => {
+const CancelBooking = ({ open, onClose, onConfirm }) => {
   if (!open) return null;
 
   return (
@@ -36,6 +36,4 @@ const CancelModal = ({ open, onClose, onConfirm }) => {
       </div>
     </div>
   );
-};
-
-export default CancelModal;
+};export default CancelBooking;

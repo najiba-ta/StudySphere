@@ -19,7 +19,11 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     const fetchRoom = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/rooms/${id}`);
+        const res = await fetch(`http://localhost:8000/rooms/${id}`,
+          { headers:{
+            authorization: "logged in"
+          }}
+        );
         const data = await res.json();
         setRoom(data);
       } catch (err) {
