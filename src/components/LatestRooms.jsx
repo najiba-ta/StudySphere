@@ -2,7 +2,9 @@
 import RoomCardHome from "./RoomCardHome";
 
 export default async function LatestRoomsSection() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/latest`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/latest`,
+    { cache: "no-store" }
+  );
   const rooms = await res.json();
 
   return (

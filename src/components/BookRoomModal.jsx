@@ -22,7 +22,8 @@ const BookRoomModal = ({ room }) => {
   const [note, setNote] = useState("");
   const [total, setTotal] = useState(0);
 
-  const today = new Date().toISOString().split("T")[0];
+  // const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA");
 
   const filteredEndTimes = timeSlots.filter((t) => t > start);
 
