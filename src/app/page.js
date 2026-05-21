@@ -8,9 +8,9 @@ export default function Home() {
   return (
     <div>
       <Banner/>
-      <LatestRoomsSection/>  
+      <LatestRoomsSection/> 
+      <CTASection/> 
       <FeatureSection/>
-      <CTASection/>
     </div>
   );
 }

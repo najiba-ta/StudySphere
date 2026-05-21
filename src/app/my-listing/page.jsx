@@ -7,23 +7,44 @@ import Link from "next/link";
 import { Button } from "@heroui/react";
 
 const MyListingsPage = () => {
-  const { data: session } = authClient.useSession();
+  const { data: session, status } = authClient.useSession();
 
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!session?.user) return;
+    if (status === "loading") return;
+
+    if (!session?.user) {
+      setLoading(false);
+      return;
+    }
 
     const fetchRooms = async () => {
       try {
+        const { data: tokenData } = await authClient.token();
+
+        if (!tokenData?.token) {
+          setLoading(false);
+          return;
+        }
+
         const res = await fetch(
-          `http://localhost:8000/my-listings/${session.user.id}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/my-listings/${session.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenData.token}`,
+            },
+          }
         );
 
         const data = await res.json();
 
-        setRooms(data);
+        if (res.ok) {
+          setRooms(data);
+        } else {
+          console.log(data?.message || "Failed to fetch listings");
+        }
       } catch (err) {
         console.log(err);
       } finally {
@@ -32,7 +53,7 @@ const MyListingsPage = () => {
     };
 
     fetchRooms();
-  }, [session]);
+  }, [session, status]);
 
   if (loading) {
     return <p className="p-10 text-center">Loading...</p>;
@@ -45,7 +66,6 @@ const MyListingsPage = () => {
       {rooms.length === 0 ? (
         <div className="rounded-2xl border bg-white p-10 text-center">
           <h2 className="text-2xl font-bold">No listings found</h2>
-
           <p className="mt-2 text-gray-500">Create your first room now.</p>
 
           <Link href="/add-room">
@@ -72,7 +92,9 @@ const MyListingsPage = () => {
               <div className="p-5">
                 <h2 className="text-xl font-bold">{room.roomName}</h2>
 
-                <p className="mt-2 text-sm text-gray-500">Floor {room.floor}</p>
+                <p className="mt-2 text-sm text-gray-500">
+                  Floor {room.floor}
+                </p>
 
                 <p className="mt-1 text-sm text-gray-500">
                   Capacity: {room.capacity}

@@ -16,9 +16,6 @@ export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState("Loading...");
-
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
@@ -33,21 +30,14 @@ export default function Navbar() {
     { name: "My Bookings", href: "/my-booking" },
   ];
 
-  const handleNavigation = (href, name) => {
+  // ✅ SIMPLE NAVIGATION (NO LOADING OVERLAY)
+  const handleNavigation = (href) => {
     setOpen(false);
-    setLoadingText(`Loading ${name}...`);
-    setLoading(true);
-
-    setTimeout(() => {
-      router.push(href);
-      setLoading(false);
-    }, 1500);
+    router.push(href);
   };
 
   const handleLogout = async () => {
     setOpen(false);
-    setLoadingText("Logging out...");
-    setLoading(true);
 
     try {
       await authClient.signOut();
@@ -55,50 +45,47 @@ export default function Navbar() {
 
       setTimeout(() => {
         window.location.href = "/login";
-      }, 1500);
+      }, 500);
     } catch {
       toast.error("Logout failed!");
-      setLoading(false);
     }
   };
 
   return (
-    <>
-      {loading && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#E4E4E6]/40 backdrop-blur-md">
-          <div className="relative flex items-center justify-center">
-            <div className="h-16 w-16 animate-spin rounded-full border-4 border-[#E4C08A]/20 border-t-[#BC5F41] border-b-[#84352D]"></div>
-            <div className="absolute h-10 w-10 animate-spin rounded-full border-4 border-[#E4E4E6]/10 border-r-[#3C0906] border-l-[#84352D]"></div>
-          </div>
-          <p className="mt-4 text-sm font-semibold tracking-wider text-[#3C0906] animate-pulse">
-            {loadingText}
-          </p>
-        </div>
-      )}
+    <nav className="sticky top-0 z-40 bg-[#3C0906]/90 backdrop-blur-xl border-b border-[#E4C08A]/10">
 
-      <nav className="sticky top-0 z-40 bg-[#3C0906]/90 backdrop-blur-xl border-b border-[#E4C08A]/10">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-5 py-4">
 
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-5 py-4">
+        {/* LOGO */}
+        <button
+          onClick={() => handleNavigation("/")}
+          className="flex items-center bg-transparent border-none p-0 cursor-pointer"
+        >
+          <Image src={logo} alt="logo" width={130} height={40} />
+        </button>
 
-          <button 
-            onClick={() => handleNavigation("/", "Home")} 
-            className="flex items-center bg-transparent border-none p-0 cursor-pointer"
-          >
-            <Image
-              src={logo}
-              alt="logo"
-              width={130}
-              height={40}
-              className="drop-shadow-md"
-            />
-          </button>
+        {/* DESKTOP LINKS */}
+        <div className="hidden md:flex items-center gap-6 text-sm">
+          {publicLinks.map((link) => (
+            <button
+              key={link.href}
+              onClick={() => handleNavigation(link.href)}
+              className={`bg-transparent border-none cursor-pointer ${
+                pathname === link.href
+                  ? "text-[#E4C08A] font-semibold"
+                  : "text-[#E4E4E6] hover:text-[#E4C08A]"
+              }`}
+            >
+              {link.name}
+            </button>
+          ))}
 
-          <div className="hidden md:flex items-center gap-6 text-sm">
-            {publicLinks.map((link) => (
+          {user &&
+            privateLinks.map((link) => (
               <button
                 key={link.href}
-                onClick={() => handleNavigation(link.href, link.name)}
-                className={`transition bg-transparent border-none p-0 cursor-pointer ${
+                onClick={() => handleNavigation(link.href)}
+                className={`bg-transparent border-none cursor-pointer ${
                   pathname === link.href
                     ? "text-[#E4C08A] font-semibold"
                     : "text-[#E4E4E6] hover:text-[#E4C08A]"
@@ -107,130 +94,85 @@ export default function Navbar() {
                 {link.name}
               </button>
             ))}
-
-            {user &&
-              privateLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => handleNavigation(link.href, link.name)}
-                  className={`transition bg-transparent border-none p-0 cursor-pointer ${
-                    pathname === link.href
-                    ? "text-[#E4C08A] font-semibold"
-                    : "text-[#E4E4E6] hover:text-[#E4C08A]"
-                  }`}
-                >
-                  {link.name}
-                </button>
-              ))}
-          </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            {user ? (
-              <>
-                <div className="flex items-center gap-3">
-                  <div className="text-right hidden lg:block">
-                    <p className="text-sm text-[#E4E4E6] font-medium">
-                      {user?.name}
-                    </p>
-                    <p className="text-xs text-[#E4C08A]/70">
-                      Welcome
-                    </p>
-                  </div>
-
-                  <Avatar className="h-10 w-10 border border-[#E4C08A]/20">
-                    <Avatar.Image src={user?.image} />
-                    <Avatar.Fallback className="bg-[#84352D] text-white">
-                      {user?.name?.charAt(0)}
-                    </Avatar.Fallback>
-                  </Avatar>
-                </div>
-                
-                <Button
-                  onClick={handleLogout}
-                  className="h-9 px-3 rounded-xl bg-[#84352D]/30 text-white hover:bg-[#BC5F41] transition"
-                >
-                  <LogOut size={16} />
-                </Button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => handleNavigation("/login", "Login")}
-                  className="text-[#E4E4E6] hover:text-[#E4C08A] transition bg-transparent border-none p-0 cursor-pointer"
-                >
-                  Login
-                </button>
-
-                <button
-                  onClick={() => handleNavigation("/register", "Registration")}
-                  className="px-4 py-2 rounded-xl bg-[#BC5F41]/30 text-[#E4C08A] hover:bg-[#BC5F41]/50 transition border-none cursor-pointer"
-                >
-                  Register
-                </button>
-              </>
-            )}
-          </div>
-
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden text-[#E4E4E6]"
-          >
-            {open ? <X /> : <Menu />}
-          </button>
         </div>
 
-        {open && (
-          <div className="md:hidden px-5 py-4 space-y-4 bg-[#3C0906] border-t border-[#E4C08A]/10 flex flex-col items-start">
-            {publicLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => handleNavigation(link.href, link.name)}
-                className="block text-[#E4E4E6] hover:text-[#E4C08A] bg-transparent border-none p-0 text-left w-full cursor-pointer"
+        {/* AUTH */}
+        <div className="hidden md:flex items-center gap-4">
+          {user ? (
+            <>
+              <Avatar className="h-10 w-10 border border-[#E4C08A]/20">
+                <Avatar.Image src={user?.image} />
+                <Avatar.Fallback className="bg-[#84352D] text-white">
+                  {user?.name?.charAt(0)}
+                </Avatar.Fallback>
+              </Avatar>
+
+              <Button
+                onClick={handleLogout}
+                className="h-9 px-3 rounded-xl bg-[#84352D]/30 text-white hover:bg-[#BC5F41]"
               >
-                {link.name}
+                <LogOut size={16} />
+              </Button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleNavigation("/login")}
+                className="text-[#E4E4E6] hover:text-[#E4C08A]"
+              >
+                Login
               </button>
-            ))}
 
-            {user &&
-              privateLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => handleNavigation(link.href, link.name)}
-                  className="block text-[#E4E4E6] hover:text-[#E4C08A] bg-transparent border-none p-0 text-left w-full cursor-pointer"
-                >
-                  {link.name}
-                </button>
-              ))}
+              <button
+                onClick={() => handleNavigation("/register")}
+                className="px-4 py-2 rounded-xl bg-[#BC5F41]/30 text-[#E4C08A]"
+              >
+                Register
+              </button>
+            </>
+          )}
+        </div>
 
-            <div className="pt-3 border-t border-[#E4C08A]/10 w-full">
-              {user ? (
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 text-white hover:text-[#BC5F41] bg-transparent border-none p-0 w-full text-left cursor-pointer"
-                >
-                  <LogOut size={16} />
-                  Logout
+        {/* MOBILE MENU */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden text-[#E4E4E6]"
+        >
+          {open ? <X /> : <Menu />}
+        </button>
+      </div>
+
+      {/* MOBILE LINKS */}
+      {open && (
+        <div className="md:hidden px-5 py-4 space-y-4 bg-[#3C0906] border-t border-[#E4C08A]/10">
+          {[...publicLinks, ...(user ? privateLinks : [])].map((link) => (
+            <button
+              key={link.href}
+              onClick={() => handleNavigation(link.href)}
+              className="block text-[#E4E4E6] hover:text-[#E4C08A] w-full text-left"
+            >
+              {link.name}
+            </button>
+          ))}
+
+          <div className="pt-3 border-t border-[#E4C08A]/10">
+            {user ? (
+              <button onClick={handleLogout} className="text-white">
+                Logout
+              </button>
+            ) : (
+              <div className="flex gap-4">
+                <button onClick={() => handleNavigation("/login")}>
+                  Login
                 </button>
-              ) : (
-                <div className="flex gap-4 text-sm">
-                  <button 
-                    onClick={() => handleNavigation("/login", "Login")} 
-                    className="text-white bg-transparent border-none p-0 cursor-pointer"
-                  >
-                    Login
-                  </button>
-                  <button 
-                    onClick={() => handleNavigation("/register", "Registration")} 
-                    className="text-[#E4C08A] bg-transparent border-none p-0 cursor-pointer"
-                  >
-                    Register
-                  </button>
-                </div>
-              )}
-            </div>
+                <button onClick={() => handleNavigation("/register")}>
+                  Register
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </nav>
-    </>
+        </div>
+      )}
+    </nav>
   );
 }

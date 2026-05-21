@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, MapPin, ImageIcon, Users, DollarSign } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
@@ -16,18 +16,14 @@ const amenitiesList = [
 
 const AddRoomPage = () => {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-
- 
   const { data: session } = authClient.useSession();
 
   const toggleAmenity = (item) => {
-    if (selectedAmenities.includes(item)) {
-      setSelectedAmenities(
-        selectedAmenities.filter((amenity) => amenity !== item),
-      );
-    } else {
-      setSelectedAmenities([...selectedAmenities, item]);
-    }
+    setSelectedAmenities((prev) =>
+      prev.includes(item)
+        ? prev.filter((a) => a !== item)
+        : [...prev, item]
+    );
   };
 
   const handleAddRoom = async (e) => {
@@ -35,35 +31,46 @@ const AddRoomPage = () => {
 
     const formData = new FormData(e.currentTarget);
     const roomsData = Object.fromEntries(formData.entries());
-
     roomsData.amenities = selectedAmenities;
 
-   
-    roomsData.ownerId = session?.user?.id;
+    try {
+      const { data: tokenData } = await authClient.token();
 
-    const res = await fetch("http://localhost:8000/rooms", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(roomsData),
-    });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenData.token}`,
+        },
+        body: JSON.stringify(roomsData),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data?.insertedId) {
+      if (!res.ok) {
+        toast.error(data?.message || "Failed to add room");
+        return;
+      }
+
       toast.success("Room added successfully!");
       e.target.reset();
       setSelectedAmenities([]);
+    } catch {
+      toast.error("Something went wrong!");
     }
   };
 
   const inputClass =
     "w-full rounded-[18px] bg-white/70 border border-[#BC5F41]/20 px-4 py-3 text-[#3C0906] outline-none transition focus:border-[#BC5F41] focus:ring-4 focus:ring-[#BC5F41]/10";
 
+  const labelClass =
+    "text-sm font-semibold text-[#3C0906] mb-1 flex items-center gap-2";
+
   return (
     <div className="min-h-screen bg-[#F6E7D0] px-4 py-14">
       <div className="mx-auto max-w-5xl">
+
+        {/* HEADER */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#BC5F41]/20 bg-[#BC5F41]/10 px-5 py-2 text-sm font-medium text-[#84352D]">
             <Sparkles size={16} />
@@ -73,142 +80,95 @@ const AddRoomPage = () => {
           <h1 className="mt-4 text-4xl font-bold text-[#3C0906]">
             Add New Study Room
           </h1>
-
-          <p className="mt-3 text-[#84352D]/70">
-            Create a focused learning space for students
-          </p>
         </div>
 
+        {/* FORM */}
         <div className="rounded-[30px] border border-[#BC5F41]/10 bg-white/80 p-6 shadow-xl backdrop-blur-xl md:p-10">
-          <form onSubmit={handleAddRoom} className="space-y-7">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+          <form onSubmit={handleAddRoom} className="space-y-6">
+
+            {/* ROOM NAME + FLOOR */}
+            <div className="grid md:grid-cols-2 gap-5">
+
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
-                  <Sparkles size={16} className="text-[#BC5F41]" />
-                  Room Name
-                </label>
-                <input
-                  name="roomName"
-                  placeholder="Silent Focus Room"
-                  className={inputClass}
-                  required
-                />
+                <label className={labelClass}>Room Name</label>
+                <input name="roomName" className={inputClass} placeholder="e.g. Silent Study Room" required />
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
-                  <MapPin size={16} className="text-[#BC5F41]" />
-                  Floor
-                </label>
-                <input
-                  name="floor"
-                  placeholder="3rd Floor"
-                  className={inputClass}
-                  required
-                />
+                <label className={labelClass}>Floor</label>
+                <input name="floor" className={inputClass} placeholder="e.g. 3rd Floor" required />
               </div>
+
             </div>
 
+            {/* DESCRIPTION */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-[#3C0906]">
-                Description
-              </label>
+              <label className={labelClass}>Description</label>
               <textarea
                 name="description"
                 rows={5}
-                placeholder="Describe the room environment..."
                 className={inputClass + " resize-none"}
+                placeholder="Describe the study environment..."
                 required
               />
             </div>
 
+            {/* IMAGE */}
             <div>
-              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
-                <ImageIcon size={16} className="text-[#BC5F41]" />
-                Room Image URL
-              </label>
-              <input
-                name="image"
-                placeholder="https://example.com/room.jpg"
-                className={inputClass}
-                required
-              />
+              <label className={labelClass}> Image URL</label>
+              <input name="image" className={inputClass} placeholder="https://..." required />
             </div>
 
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            {/* CAPACITY + RATE */}
+            <div className="grid md:grid-cols-2 gap-5">
+
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
-                  <Users size={16} className="text-[#BC5F41]" />
-                  Seat Capacity
-                </label>
-                <input
-                  name="capacity"
-                  type="number"
-                  min={1}
-                  placeholder="4"
-                  className={inputClass}
-                  required
-                />
+                <label className={labelClass}>Capacity</label>
+                <input type="number" name="capacity" className={inputClass} placeholder="Number of people" required />
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-[#3C0906]">
-                  <DollarSign size={16} className="text-[#BC5F41]" />
-                  Hourly Rate
-                </label>
-                <input
-                  name="hourlyRate"
-                  type="number"
-                  min={1}
-                  placeholder="10"
-                  className={inputClass}
-                  required
-                />
+                <label className={labelClass}> Hourly Rate</label>
+                <input type="number" name="hourlyRate" className={inputClass} placeholder="Price per hour" required />
               </div>
+
             </div>
 
+            {/* AMENITIES */}
             <div>
-              <label className="mb-4 block text-sm font-medium text-[#3C0906]">
-                Amenities
-              </label>
+              <label className={labelClass}> Amenities</label>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
                 {amenitiesList.map((item) => {
                   const active = selectedAmenities.includes(item);
 
                   return (
                     <button
-                      type="button"
                       key={item}
+                      type="button"
                       onClick={() => toggleAmenity(item)}
-                      className={`rounded-2xl border px-5 py-4 text-sm font-medium transition ${
+                      className={`rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-300 ${
                         active
-                          ? "border-[#BC5F41] bg-[#BC5F41]/10 text-[#84352D]"
-                          : "border-[#BC5F41]/10 bg-[#F6E7D0]/50 text-[#3C0906] hover:border-[#BC5F41]/30"
+                          ? "bg-[#BC5F41] text-white border-[#BC5F41] scale-105"
+                          : "bg-[#F6E7D0]/40 text-[#3C0906] border-[#BC5F41]/10 hover:border-[#BC5F41]"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span>{item}</span>
-
-                        <input
-                          type="checkbox"
-                          checked={active}
-                          readOnly
-                          className="h-4 w-4 accent-[#BC5F41]"
-                        />
-                      </div>
+                      {item}
                     </button>
                   );
                 })}
               </div>
             </div>
 
+            {/* SUBMIT */}
             <button
               type="submit"
-              className="w-full rounded-2xl bg-[#3C0906] py-4 text-lg font-semibold text-white transition hover:bg-[#84352D]"
+              className="w-full rounded-2xl bg-[#3C0906] py-4 text-white font-semibold text-lg hover:bg-[#84352D] transition-all duration-300"
             >
               + Add Study Room
             </button>
+
           </form>
         </div>
       </div>
