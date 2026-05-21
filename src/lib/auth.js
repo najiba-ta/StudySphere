@@ -34,4 +34,3 @@ export const auth = betterAuth({
   //   jwt()
   // ]
 });
-// ghukoioi
