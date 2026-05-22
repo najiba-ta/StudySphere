@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# StudySphere
 
-## Getting Started
+StudySphere is a modern full-stack study room booking platform built for students and library users who need quiet, organized, and comfortable spaces for studying. Users can explore available study rooms, check detailed information, book rooms for specific time slots, and manage their bookings easily through a clean and responsive interface.
 
-First, run the development server:
+The platform also allows room owners to add and manage their own study room listings. StudySphere focuses on smooth user experience, secure authentication, booking conflict prevention, and a modern recruiter-friendly UI design.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Live Website
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+https://your-live-link.vercel.app
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+# Client Repository
 
-To learn more about Next.js, take a look at the following resources:
+https://github.com/your-username/client-side-link
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Server Repository
 
-## Deploy on Vercel
+https://github.com/your-username/server-side-link
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Main Features
+
+- Secure authentication system with JWT protection
+- Google login and email/password authentication
+- Private routes for authenticated users
+- Add, update, and delete study room listings
+- Room booking system with real-time cost calculation
+- Booking conflict detection to prevent double booking
+- Dynamic search and filter functionality
+- Amenities filtering system
+- Personalized My Listings dashboard
+- Personalized My Bookings dashboard
+- Booking cancellation feature
+- Responsive design for mobile, tablet, and desktop
+- Modern and unique UI design
+- Dynamic loading spinner and toast notifications
+- Latest rooms section using MongoDB sort and limit
+- Dynamic browser page titles
+
+---
+
+# Technologies Used
+
+## Frontend
+- Next.js
+- React.js
+- Tailwind CSS
+- Hero UI
+- React Hot Toast
+- Lucide React
+
+## Backend
+- Node.js
+- Express.js
+- MongoDB
+- jose-cjs
+
+---
+
+# Authentication Features
+
+- JWT token verification
+- Protected private routes
+- Google authentication
+- Persistent user session
+- Secure authorization system
+
+---
+
+# Pages Included
+
+- Home Page
+- Rooms Page
+- Room Details Page
+- Add Room Page
+- My Listings Page
+- My Bookings Page
+- Login Page
+- Register Page
+- Update Room Page
+- Custom 404 Page
+
+---
+
+# Search & Filter Features
+
+Users can:
+
+- Search rooms by room name
+- Filter rooms by amenities
+- Filter rooms by hourly price range
+
+---
+
+# Booking Features
+
+- Book rooms with date and time selection
+- Automatic total cost calculation
+- Prevent overlapping bookings
+- Booking confirmation system
+- Booking cancellation functionality
+
+---
+
+# Environment Variables
+
+Sensitive information is secured using `.env` files.
+
+Example:
+
+```env
+MONGO_URI=your_mongodb_uri
+CLIENT_URL=your_client_url
+NEXT_PUBLIC_SERVER_URL=your_server_url
