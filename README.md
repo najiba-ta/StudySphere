@@ -8,19 +8,20 @@ The platform also allows room owners to add and manage their own study room list
 
 # Live Website
 
-https://your-live-link.vercel.app
+https://studsphere-pi.vercel.app
 
 ---
 
 # Client Repository
 
-https://github.com/your-username/client-side-link
+https://github.com/najiba-ta/StudySphere
 
 ---
 
 # Server Repository
 
-https://github.com/your-username/server-side-link
+https://github.com/najiba-ta/StudySphere-Server
+
 
 ---
 
@@ -105,16 +106,3 @@ Users can:
 - Prevent overlapping bookings
 - Booking confirmation system
 - Booking cancellation functionality
-
----
-
-# Environment Variables
-
-Sensitive information is secured using `.env` files.
-
-Example:
-
-```env
-MONGO_URI=your_mongodb_uri
-CLIENT_URL=your_client_url
-NEXT_PUBLIC_SERVER_URL=your_server_url
