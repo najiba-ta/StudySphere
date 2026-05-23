@@ -17,6 +17,10 @@ async function getRoom(id) {
   if (!res.ok) return null;
   return res.json();
 }
+export const metadata = {
+  title: "StudySphere – UpdateRoom",
+};
+
 
 export default async function Page({ params }) {
   const { id } = await params;

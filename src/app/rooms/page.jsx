@@ -1,8 +1,12 @@
 import RoomCard from "@/components/RoomCard";
 import RoomFilter from "@/components/RoomFilter";
 
+export const metadata = {
+  title: "StudySphere – Available Rooms",
+};
+
 export default async function Page(props) {
-  const searchParams = await props.searchParams; // ✅ FIX
+  const searchParams = await props.searchParams; 
 
   const search = searchParams?.search || "";
   const amenities = searchParams?.amenities || "";

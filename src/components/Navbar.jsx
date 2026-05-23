@@ -30,7 +30,6 @@ export default function Navbar() {
     { name: "My Bookings", href: "/my-booking" },
   ];
 
-  // ✅ SIMPLE NAVIGATION (NO LOADING OVERLAY)
   const handleNavigation = (href) => {
     setOpen(false);
     router.push(href);

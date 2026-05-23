@@ -27,6 +27,15 @@ const RoomCard = ({ room }) => {
       router.push(`/rooms/${_id}`);
     }, 700);
   };
+  const isValidUrl = (value) => {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 
   return (
     <>
@@ -62,7 +71,7 @@ const RoomCard = ({ room }) => {
         <div className="relative overflow-hidden">
           <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.5 }}>
             <Image
-              src={image}
+              src={isValidUrl(image)? image : "https://img.magnific.com/free-vector/illustration-gallery-icon_53876-27002.jpg"}
               width={600}
               height={400}
               className="h-[200px] w-full object-cover"

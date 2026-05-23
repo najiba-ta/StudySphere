@@ -21,6 +21,7 @@ const BookRoomModal = ({ room }) => {
   const [end, setEnd] = useState("");
   const [note, setNote] = useState("");
   const [total, setTotal] = useState(0);
+  console.log(room);
 
   // const today = new Date().toISOString().split("T")[0];
   const today = new Date().toLocaleDateString("en-CA");
